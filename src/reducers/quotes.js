@@ -18,11 +18,11 @@ export default (state = [], action) => {
 
   switch (action.type) {
     case 'ADD_QUOTE':
-      return state.concat(action.payload);
+      return state.concat(action.quote);
     case 'REMOVE_QUOTE':
-      return state.filter((quote) => quote.id !== action.payload);
+      return state.filter((quote) => quote.id !== action.quoteId);
     case 'UPVOTE_QUOTE':
-      quote = findWithIndex(state, (item) => item.id === action.payload);
+      quote = findWithIndex(state, (item) => item.id === action.quoteId);
       quote.item.votes++;
       return [
         ...state.slice(0, quote.index),
@@ -30,7 +30,7 @@ export default (state = [], action) => {
         ...state.slice(quote.index + 1),
       ];
     case 'DOWNVOTE_QUOTE':
-      quote = findWithIndex(state, (item) => item.id === action.payload);
+      quote = findWithIndex(state, (item) => item.id === action.quoteId);
       if (quote.item.votes !== 0) {
         quote.item.votes--;
       }
