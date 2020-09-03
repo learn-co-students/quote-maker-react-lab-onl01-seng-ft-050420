@@ -1,3 +1,45 @@
+import {
+  ADD_QUOTE,
+  REMOVE_QUOTE,
+  UPVOTE_QUOTE,
+  DOWNVOTE_QUOTE,
+} from '../actions/types';
+
+const findWithIndex = (arr, predicate) => {
+  const index = arr.findIndex(predicate);
+  return {
+    item: index !== -1 ? arr[index] : null,
+    index,
+  };
+};
+
 export default (state = [], action) => {
-  return state;
-}
+  let quote;
+
+  switch (action.type) {
+    case 'ADD_QUOTE':
+      return state.concat(action.payload);
+    case 'REMOVE_QUOTE':
+      return state.filter((quote) => quote.id !== action.payload);
+    case 'UPVOTE_QUOTE':
+      quote = findWithIndex(state, (item) => item.id === action.payload);
+      quote.item.votes++;
+      return [
+        ...state.slice(0, quote.index),
+        quote.item,
+        ...state.slice(quote.index + 1),
+      ];
+    case 'DOWNVOTE_QUOTE':
+      quote = findWithIndex(state, (item) => item.id === action.payload);
+      if (quote.item.votes !== 0) {
+        quote.item.votes--;
+      }
+      return [
+        ...state.slice(0, quote.index),
+        quote.item,
+        ...state.slice(quote.index + 1),
+      ];
+    default:
+      return state;
+  }
+};
